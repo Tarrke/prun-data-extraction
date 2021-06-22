@@ -9,6 +9,7 @@ import { Site, Sites } from './sites';
 import { Inventory, StorageStore } from './storage-store';
 import { User } from './user';
 import { Workforce, WorkforcePopulation } from './workforce';
+import { LocalMarket, LocalMarketAd, LocalMarkets } from './localmarkets';
 
 interface State 
 {
@@ -67,6 +68,9 @@ export {
     Data,
     Exchange,
     Inventory,
+    LocalMarket,
+    LocalMarkets,
+    LocalMarketAd,
     Maps,
     MapEdge,
     MapEdgePoint,

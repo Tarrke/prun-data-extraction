@@ -1,8 +1,11 @@
+import { LocalMarkets } from "./localmarkets";
+
 interface Data {
     items: {
         users: any,
         systems: { [id: string]: System },
         planets: { [id: string]: DataPlanet },
+        localmarkets: LocalMarkets,
     },
     statuses: any,
     locators: any,

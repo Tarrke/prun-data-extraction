@@ -1,11 +1,11 @@
-import { LocalMarkets } from "./localmarkets";
+import { LocalMarket } from "./localmarkets";
 
 interface Data {
     items: {
         users: any,
         systems: { [id: string]: System },
         planets: { [id: string]: DataPlanet },
-        localmarkets: LocalMarkets,
+        localmarkets: { [id: string]: LocalMarket },
     },
     statuses: any,
     locators: any,
@@ -69,7 +69,6 @@ interface System {
     celestialBodies: Array<any>,
     id: string,
     planets: Array<SystemPlanet>,
-
 }
 
 interface SystemPlanet {

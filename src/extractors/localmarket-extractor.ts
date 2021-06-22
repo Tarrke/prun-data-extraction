@@ -12,34 +12,41 @@ class LocalMarketExtractor implements BaseExtractor {
 
         this.localmarkets = new LocalMarketDataProvider(state).LocalMarkets;
         // this.materials = new MaterialDataProvider(state).Materials;
-                
-        // var stars = this.parseStars(state);
-        // var systems = this.parseSystems(state);
+
+        var lms = this.localmarkets;
+
+        var lmss = this.parseLM(state);
+
         /*
-        var explorationData = stars.map(star => {
-            if (!systems[star.systemId]) {
+        var ads = state.data.items.localmarkets.map( (lm) => {
+            return {
+                id: lm.id,
+                currency: lm.currency.code,
+            };
+        });
+        */
+        /*
+        var ads = state.data.items.localmarkets.localmarkets.map( localmarket => {
+            var ad = localmarket.ads.map( ad => {
                 return {
-                    star,
-                    unexplored: true,
+                    id: ad.id,
+                    type: ad.type,
+                    price: ad.price,
+                    quantity: ad.quantity,
+                    status: ad.status,
                 }
-            } else {
-                return {
-                    star,
-                    planets: systems[star.systemId].planets,
-                }
+            });
+            return ad;
+        });
+        */
+        /*
+        var ads = state.data.items.localmarkets.localmarkets.map( localmarket => {
+            return {
+                id: localmarket.id,
             }
         });
-
-        var starsById = stars.toDictionary(star => star.systemId);
-        var edgeData = state.maps.universe.data.edges
-            .map(edge => {
-
-                var l = starsById[edge.left.systemId].naturalId;
-                var r = starsById[edge.right.systemId].naturalId;
-
-                return { l, r };
-            });
         */
+
         return {
             dataVersion: 'LM-001',
             userInfo: {
@@ -48,83 +55,44 @@ class LocalMarketExtractor implements BaseExtractor {
                 userId: state.user.user.data.id,
             },
             tag: "Tarrke",
-            localmarkets: this.localmarkets,
+            localmarkets: lmss,
+            //ads: ads,
         };
     }
 
-    /*
-    private parseStars(state: State) {
-        var stars = state.maps.universe.data.stars.map(star => {
-
-            var lastLine = star.address.lines[star.address.lines.length-1];
-            return {
-                systemId: star.systemId,
-                type: star.type,
-                position: Object.assign({}, star.position),
-                sectorId: star.sectorId,
-                subSectorId: star.subSectorId,
-                naturalId: lastLine.entity.naturalId,
-                name: lastLine.entity.name,
-            }
-
-        });
-
-        return stars;
-    }
-
-    private parseSystems(state: State) {
-        var systems = Object.keys(state.data.items.systems || [])
-            .map(key => state.data.items.systems[key])
-            .map(system => {
+    private parseLM(state: State) {
+        var lm = Object.keys(state.data.items.localmarkets)
+            .map(key => state.data.items.localmarkets[key])
+            .map( localmarket => {
                 return {
-                    id: system.id,
-                    naturalId: system.naturalId,
-                    name: system.name,
-                    planets: system.planets.map(systemPlanet => {
-                        var planet = state.data.items.planets[systemPlanet.id];
-                        if (planet) {
-                            return {
-                                id: planet.id,
-                                naturalId: planet.naturalId,
-                                name: planet.name,
-                                celestialBodies: planet.celestialBodies.length,
-                                radiation: planet.data.radiation,
-                                pressure: planet.data.pressure,
-                                orbitIndex: planet.data.orbitIndex,
-                                fertility: planet.data.fertility,
-                                sunlight: planet.data.sunlight,
-                                surface: planet.data.surface,
-                                gravity: planet.data.gravity,
-                                radius: planet.data.radius,
-                                temperature: planet.data.temperature,
-                                mass: planet.data.mass,
-                                magneticField: planet.data.magneticField,
-                                massEarth: planet.data.massEarth,
-                                resources: planet.data.resources.map(resource => {
-                                    var material = this.materials[resource.materialId];
-                                    return {
-                                        ticker: material.ticker,
-                                        type: resource.type,
-                                        factor: resource.factor,
-                                    }
-                                }),
-                            };
-                        } else {
-                            return {
-                                id: systemPlanet.id,
-                                naturalId: systemPlanet.naturalId,
-                                unexplored: true
+                    id: localmarket.id,
+                    currency: localmarket.currency,
+                    availableAdTypes: localmarket.availableAdTypes,
+                    ads: Object.keys(localmarket.ads)
+                        .map(key => localmarket.ads[key])
+                        .map(ad => {
+                            if (ad.type == "COMMODITY_BUYING" || ad.type == "COMMODITY_SELLING" ) {
+                                return {
+                                    items: ad.quantity.amount + " " + ad.quantity.material.ticker,
+                                    price: ad.price.amount + " " + ad.price.currency,
+                                    // minimumRating: ad.minimumRating,
+                                    status: ad.status,
+                                    // type: ad.type,
+                                }                                
+                            } else {
+                                return {
+                                    price: ad.price.amount + " " + ad.price.currency,
+                                    minimumRating: ad.minimumRating,
+                                    status: ad.status,
+                                    type: ad.type,
+                                }
                             }
-                        }
-                    }),
+                        }),
                 };
             })
-            .toDictionary(system => system.id)
-
-        return systems;
-
+            .toDictionary(localmarket => localmarket.id)
+        return lm;
     }
-    */
 }
 
 export { LocalMarketExtractor }

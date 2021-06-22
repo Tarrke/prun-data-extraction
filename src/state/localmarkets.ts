@@ -7,12 +7,13 @@ interface LocalMarkets {
 
 interface LocalMarket {
     id: string,
-    ads: Array<LocalMarketAd>,
+    ads: { [id: string]: LocalMarketAd },
     currency : {
         code: string,
         name: string,
         numericCode: number,
     },
+    availableAdTypes: Array<string>,
 }
 
 interface LocalMarketAd {
@@ -24,6 +25,7 @@ interface LocalMarketAd {
         amount: number,
         currency: string,
     },
+    quantity: any,
 }
 
 export {

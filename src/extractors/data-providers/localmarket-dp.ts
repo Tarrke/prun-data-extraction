@@ -10,6 +10,9 @@ class LocalMarketDataProvider {
             .map(key => data.data.items.localmarkets[key])
             .map(localmarket => ({ 
                 id: localmarket.id,
+                currency: localmarket.currency,
+                ads: localmarket.ads,
+                availableAdTypes: localmarket.availableAdTypes,
             }))
             .reduce((obj, localmarket) => Object.assign(obj, { [localmarket.id]: localmarket }), {});
         
